@@ -24,7 +24,7 @@ function AppContent() {
       navigate('/live', { replace: true });
     } 
     // If user doesn't have a token and is not on root or otp page, redirect to root
-    else if (!token && !['/', '/otp', '/register'].includes(location.pathname)) {
+    else if (!token && !['/', '/otp', '/register','/admin/users'].includes(location.pathname)) {
       navigate('/', { replace: true });
     }
   }, [location.pathname, navigate]);
