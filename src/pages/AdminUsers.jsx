@@ -13,11 +13,7 @@ export default function AdminUsers() {
   useEffect(() => {
     const fetchUsers = async () => {
       try {
-        const response = await fetch(`${API}/api/auth/users`, {
-          headers: {
-            'Authorization': `Bearer ${localStorage.getItem('token')}`
-          }
-        });
+        const response = await fetch(`${API}/api/auth/users`);
 
         if (!response.ok) {
           throw new Error('Failed to fetch users');
@@ -118,7 +114,29 @@ export default function AdminUsers() {
         
         .table-container {
           width: 100%;
-          overflow-x: auto;
+          max-height: calc(100vh - 200px);
+          overflow: auto;
+          border-radius: 8px;
+          box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        
+        .table-container::-webkit-scrollbar {
+          width: 8px;
+          height: 8px;
+        }
+        
+        .table-container::-webkit-scrollbar-track {
+          background: #2d2d2d;
+          border-radius: 4px;
+        }
+        
+        .table-container::-webkit-scrollbar-thumb {
+          background: #555;
+          border-radius: 4px;
+        }
+        
+        .table-container::-webkit-scrollbar-thumb:hover {
+          background: #777;
         }
         
         table {
