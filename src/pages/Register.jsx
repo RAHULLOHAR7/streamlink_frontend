@@ -18,10 +18,10 @@ export default function Register() {
     if (!email) return;
 
     setLoading(true);
-    const toastId = toast.loading("Sending access code...");
+    const toastId = toast.loading("Granting access...");
 
     try {
-      const res = await fetch(`${API}/api/auth/send-otp`, {
+      const res = await fetch(`${API}/api/auth/direct-login`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email }),
@@ -30,17 +30,24 @@ export default function Register() {
       const data = await res.json();
 
       if (!res.ok) {
-        toast.error(data.message || "Failed to send access code", {
+        toast.error(data.message || "Failed to grant access", {
           id: toastId,
         });
         return;
       }
 
-      toast.success("Access code sent to your email", {
-        id: toastId,
-      });
-
-      nav("/otp", { state: { email } });
+      // Store token and redirect to live page
+      if (data.token) {
+        localStorage.setItem("token", data.token);
+        toast.success("Access granted! Redirecting...", {
+          id: toastId,
+        });
+        nav("/live");
+      } else {
+        toast.error("No token received", {
+          id: toastId,
+        });
+      }
     } catch {
       toast.error("Server error. Try again.", {
         id: toastId,
@@ -54,9 +61,8 @@ export default function Register() {
     <div className="auth-hero">
       <div className="card">
         <div className="card-header">
-          <span className="badge">Step 1 of 2</span>
           <h2>Request Access</h2>
-          <p>Enter your email to receive a secure access code</p>
+          <p>Enter your email to access the live stream</p>
         </div>
 
         <form className="card-body" onSubmit={handleSubmit}>
@@ -72,12 +78,12 @@ export default function Register() {
               />
             </div>
             <p className="input-hint">
-              Your email will only be used for this session
+              Enter your email to get instant access
             </p>
           </div>
 
           <button className="btn btn-full" disabled={!email || loading}>
-            {loading ? "Sending Access Code..." : "Send Access Code"}
+            {loading ? "Granting Access..." : "Get Access"}
           </button>
         </form>
 
